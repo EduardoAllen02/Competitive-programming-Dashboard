@@ -1,26 +1,248 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: #06060a;
+  --color-surface: #0c0c14;
+  --color-surface-2: #111120;
+  --color-surface-3: #161628;
+  --color-border: #1c1c30;
+  --color-border-bright: #2a2a50;
+  --color-neon: #aaff00;
+  --color-neon-dim: rgba(170, 255, 0, 0.15);
+  --color-neon-green: #aaff00;
+  --color-accent: #aaff00;
+  --color-accent-purple: #7c3aed;
+  --color-amber: #ffb800;
+  --color-emerald: #00ff88;
+  --color-red: #ff4466;
+  --color-text: #ffffff;
+  --color-text-dim: #a0a0c0;
+  --color-muted: #40405a;
+  --color-gold: #ffb800;
+  --color-silver: #8090a8;
+  --color-bronze: #c2773a;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #06060a;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #06060a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c1c30;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aaff00;
+}
+
+/* ─── Grid Background ─────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(170, 255, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(170, 255, 0, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center center;
+}
+
+/* ─── Glass Cards ─────────────────────────────── */
+.glass {
+  background: rgba(12, 12, 20, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(28, 28, 48, 0.9);
+}
+
+/* ─── Neon Glow Effects ───────────────────────── */
+.glow-neon {
+  box-shadow:
+    0 0 20px rgba(170, 255, 0, 0.2),
+    0 0 60px rgba(170, 255, 0, 0.06);
+}
+
+.glow-neon-strong {
+  box-shadow:
+    0 0 30px rgba(170, 255, 0, 0.35),
+    0 0 80px rgba(170, 255, 0, 0.12),
+    0 0 120px rgba(170, 255, 0, 0.04);
+}
+
+.glow-amber {
+  box-shadow:
+    0 0 24px rgba(255, 184, 0, 0.3),
+    0 0 60px rgba(255, 184, 0, 0.1);
+}
+
+.glow-amber-strong {
+  box-shadow:
+    0 0 30px rgba(255, 184, 0, 0.45),
+    0 0 80px rgba(255, 184, 0, 0.15);
+}
+
+/* ─── Neon Text ───────────────────────────────── */
+.neon-text {
+  color: #aaff00;
+  text-shadow:
+    0 0 10px rgba(170, 255, 0, 0.7),
+    0 0 30px rgba(170, 255, 0, 0.3),
+    0 0 60px rgba(170, 255, 0, 0.1);
+}
+
+.neon-text-amber {
+  color: #ffb800;
+  text-shadow:
+    0 0 10px rgba(255, 184, 0, 0.7),
+    0 0 30px rgba(255, 184, 0, 0.3);
+}
+
+/* ─── Gradient Text ───────────────────────────── */
+.gradient-text-neon {
+  background: linear-gradient(135deg, #ffffff 0%, #aaff00 60%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, #ffffff 0%, #ffb800 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Featured / Neon Card ────────────────────── */
+.neon-card {
+  background: linear-gradient(135deg, #aaff0018, #aaff0008);
+  border: 1px solid rgba(170, 255, 0, 0.35);
+  box-shadow:
+    0 0 30px rgba(170, 255, 0, 0.12),
+    inset 0 0 30px rgba(170, 255, 0, 0.04);
+}
+
+.neon-card-solid {
+  background: linear-gradient(135deg, #aaff00, #0090cc);
+  border: none;
+  box-shadow:
+    0 0 40px rgba(170, 255, 0, 0.5),
+    0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.amber-card-solid {
+  background: linear-gradient(135deg, #ffb800, #cc8800);
+  border: none;
+  box-shadow:
+    0 0 40px rgba(255, 184, 0, 0.5),
+    0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Gradient Borders ────────────────────────── */
+.neon-border {
+  position: relative;
+  border-radius: 16px;
+}
+.neon-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(170, 255, 0, 0.5), rgba(100, 180, 0, 0.3), rgba(170, 255, 0, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ─── Scanline (leaderboard effect) ──────────── */
+.scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(170, 255, 0, 0.008) 3px,
+    rgba(170, 255, 0, 0.008) 4px
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+.scanline { position: relative; }
+
+/* ─── Orb / Ambient Glow BG ──────────────────── */
+.orb-bg {
+  position: relative;
+  overflow: hidden;
+}
+.orb-bg::before {
+  content: '';
+  position: fixed;
+  top: -30%;
+  right: -15%;
+  width: 55%;
+  height: 70%;
+  background: radial-gradient(ellipse, rgba(170, 255, 0, 0.05) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-bg::after {
+  content: '';
+  position: fixed;
+  bottom: -20%;
+  left: -10%;
+  width: 45%;
+  height: 55%;
+  background: radial-gradient(ellipse, rgba(100, 180, 0, 0.04) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Status Dot ──────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 6px rgba(0, 255, 136, 0.6); }
+  50% { opacity: 0.5; transform: scale(0.75); box-shadow: 0 0 2px rgba(0, 255, 136, 0.3); }
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ff88;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ─── Badge ───────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-family: var(--font-geist-mono);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ─── Animated gradient border ───────────────── */
+@keyframes border-spin {
+  from { --angle: 0deg; }
+  to { --angle: 360deg; }
 }

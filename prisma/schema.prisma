@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Persona {
+  id                 Int             @id @default(autoincrement())
+  nombre_completo    String
+  correo_electronico String          @unique
+  competidor         Competidor?
+  miembros           MiembroEquipo[]
+}
+
+model Competidor {
+  persona_id             Int       @id
+  fecha_inicio_estudios  DateTime  @db.Date
+  fecha_termino_estudios DateTime? @db.Date
+  fecha_nacimiento       DateTime  @db.Date
+  persona                Persona   @relation(fields: [persona_id], references: [id], onDelete: Cascade)
+}
+
+model Equipo {
+  id         Int             @id @default(autoincrement())
+  nombre     String
+  miembros   MiembroEquipo[]
+  resultados Resultado[]
+}
+
+enum Rol {
+  competidor
+  sustituto
+  coach
+  co_coach
+}
+
+model MiembroEquipo {
+  id         Int     @id @default(autoincrement())
+  equipo_id  Int
+  persona_id Int
+  rol        Rol
+  equipo     Equipo  @relation(fields: [equipo_id], references: [id], onDelete: Cascade)
+  persona    Persona @relation(fields: [persona_id], references: [id])
+
+  @@unique([equipo_id, persona_id])
+}
+
+enum TipoFecha {
+  fecha_cero
+  clasificatoria
+  repechaje
+}
+
+model FechaCompetencia {
+  id        Int             @id @default(autoincrement())
+  tipo      TipoFecha
+  numero    Int?
+  fecha     DateTime        @db.Date
+  problemas FechaProblema[]
+}
+
+model Problema {
+  id          Int             @id @default(autoincrement())
+  nombre      String
+  descripcion String          @db.Text
+  teoria      String?         @db.Text
+  fechas      FechaProblema[]
+}
+
+model FechaProblema {
+  fecha_id    Int
+  problema_id Int
+  fecha       FechaCompetencia @relation(fields: [fecha_id], references: [id], onDelete: Cascade)
+  problema    Problema         @relation(fields: [problema_id], references: [id])
+  resultados  Resultado[]
+
+  @@id([fecha_id, problema_id])
+}
+
+model Resultado {
+  equipo_id        Int
+  fecha_id         Int
+  problema_id      Int
+  puntos_obtenidos Int           @default(0)
+  equipo           Equipo        @relation(fields: [equipo_id], references: [id])
+  fecha_problema   FechaProblema @relation(fields: [fecha_id, problema_id], references: [fecha_id, problema_id])
+
+  @@id([equipo_id, fecha_id, problema_id])
+}
