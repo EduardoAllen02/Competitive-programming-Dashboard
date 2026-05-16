@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/db";
+import { Prisma } from "@/generated/prisma";
 import net from "net";
 
 type HealthState = {
   healthy: boolean;
-  node1: { io: string; sql: string; seconds: number | null; error: string | null };
+  node1: { io: string; sql: string; error: string | null };
   node2Reachable: boolean;
   checkedAt: number;
 };
@@ -28,27 +29,30 @@ export async function getReplicationHealth(): Promise<HealthState> {
   if (cache && Date.now() - cache.checkedAt < CACHE_TTL) return cache;
 
   try {
-    const rows = await prisma.$queryRaw<Record<string, unknown>[]>`SHOW REPLICA STATUS`;
-    const row = rows[0] ?? {};
+    const [ioRows, sqlRows] = await Promise.all([
+      prisma.$queryRaw<{ SERVICE_STATE: string }[]>(
+        Prisma.sql`SELECT SERVICE_STATE FROM performance_schema.replication_connection_status LIMIT 1`
+      ),
+      prisma.$queryRaw<{ SERVICE_STATE: string }[]>(
+        Prisma.sql`SELECT SERVICE_STATE FROM performance_schema.replication_applier_status LIMIT 1`
+      ),
+    ]);
 
-    const ioErr = String(row.Last_IO_Error ?? "").trim();
-    const sqlErr = String(row.Last_SQL_Error ?? "").trim();
-
-    const node1 = {
-      io: String(row.Replica_IO_Running ?? "No"),
-      sql: String(row.Replica_SQL_Running ?? "No"),
-      seconds: row.Seconds_Behind_Source != null ? Number(row.Seconds_Behind_Source) : null,
-      error: (ioErr || sqlErr) || null,
-    };
-
+    const io = ioRows[0]?.SERVICE_STATE ?? "OFF";
+    const sql = sqlRows[0]?.SERVICE_STATE ?? "OFF";
     const node2Reachable = await checkNode2Reachable();
-    const healthy = node1.io === "Yes" && node1.sql === "Yes" && !node1.error && node2Reachable;
+    const healthy = io === "ON" && sql === "ON" && node2Reachable;
 
-    cache = { healthy, node1, node2Reachable, checkedAt: Date.now() };
-  } catch {
+    cache = {
+      healthy,
+      node1: { io, sql, error: null },
+      node2Reachable,
+      checkedAt: Date.now(),
+    };
+  } catch (e) {
     cache = {
       healthy: false,
-      node1: { io: "No", sql: "No", seconds: null, error: "Error al consultar SHOW REPLICA STATUS" },
+      node1: { io: "OFF", sql: "OFF", error: String(e) },
       node2Reachable: false,
       checkedAt: Date.now(),
     };
