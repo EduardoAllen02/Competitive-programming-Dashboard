@@ -189,7 +189,6 @@ body {
 /* ─── Orb / Ambient Glow BG ──────────────────── */
 .orb-bg {
   position: relative;
-  overflow: hidden;
 }
 .orb-bg::before {
   content: '';
