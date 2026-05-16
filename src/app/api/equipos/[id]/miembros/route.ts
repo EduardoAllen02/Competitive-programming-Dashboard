@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { Rol } from "@/generated/prisma/client";
+import { Rol } from "@/generated/prisma";
 import { assertReplicationHealthy, ReplicationError } from "@/lib/replication";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {

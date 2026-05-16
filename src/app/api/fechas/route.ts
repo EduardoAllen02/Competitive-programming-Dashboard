@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { TipoFecha } from "@/generated/prisma/client";
+import { TipoFecha } from "@/generated/prisma";
 import { assertReplicationHealthy, ReplicationError } from "@/lib/replication";
 
 export async function GET() {
