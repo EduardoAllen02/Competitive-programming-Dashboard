@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { assertReplicationHealthy, ReplicationError } from "@/lib/replication";
 
 export async function GET() {
   const personas = await prisma.persona.findMany({
@@ -10,6 +11,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  try { await assertReplicationHealthy(); }
+  catch (e) { if (e instanceof ReplicationError) return NextResponse.json({ error: e.message }, { status: 503 }); throw e; }
+
   const body = await req.json();
   const { nombre_completo, correo_electronico, es_competidor, fecha_inicio_estudios, fecha_termino_estudios, fecha_nacimiento } = body;
 

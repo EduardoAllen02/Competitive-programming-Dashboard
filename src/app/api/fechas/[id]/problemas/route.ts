@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { assertReplicationHealthy, ReplicationError } from "@/lib/replication";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try { await assertReplicationHealthy(); }
+  catch (e) { if (e instanceof ReplicationError) return NextResponse.json({ error: e.message }, { status: 503 }); throw e; }
+
   const { id } = await params;
   const { nombre, descripcion, teoria } = await req.json();
 
@@ -24,6 +28,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try { await assertReplicationHealthy(); }
+  catch (e) { if (e instanceof ReplicationError) return NextResponse.json({ error: e.message }, { status: 503 }); throw e; }
+
   const { id } = await params;
   const { problema_id } = await req.json();
   await prisma.fechaProblema.delete({

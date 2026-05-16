@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { TipoFecha } from "@/generated/prisma/client";
+import { assertReplicationHealthy, ReplicationError } from "@/lib/replication";
 
 export async function GET() {
   const fechas = await prisma.fechaCompetencia.findMany({
@@ -14,6 +15,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  try { await assertReplicationHealthy(); }
+  catch (e) { if (e instanceof ReplicationError) return NextResponse.json({ error: e.message }, { status: 503 }); throw e; }
+
   const { tipo, numero, fecha } = await req.json();
   if (!tipo || !fecha) {
     return NextResponse.json({ error: "Tipo y fecha requeridos" }, { status: 400 });

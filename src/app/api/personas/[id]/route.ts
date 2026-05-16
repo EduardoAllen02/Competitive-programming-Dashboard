@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { assertReplicationHealthy, ReplicationError } from "@/lib/replication";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,6 +13,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 }
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try { await assertReplicationHealthy(); }
+  catch (e) { if (e instanceof ReplicationError) return NextResponse.json({ error: e.message }, { status: 503 }); throw e; }
+
   const { id } = await params;
   const { nombre_completo, correo_electronico } = await req.json();
   const persona = await prisma.persona.update({
@@ -22,6 +26,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 }
 
 export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  try { await assertReplicationHealthy(); }
+  catch (e) { if (e instanceof ReplicationError) return NextResponse.json({ error: e.message }, { status: 503 }); throw e; }
+
   const { id } = await params;
   await prisma.persona.delete({ where: { id: Number(id) } });
   return NextResponse.json({ ok: true });

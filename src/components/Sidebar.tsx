@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Users, User, Calendar, Trophy, Code2, Wifi } from "lucide-react";
+import { LayoutDashboard, Users, User, Calendar, Trophy, Code2, Wifi, WifiOff } from "lucide-react";
+import { useReplicationHealth } from "@/hooks/useReplicationHealth";
 
 const NAV = [
   { href: "/",        label: "Dashboard", icon: LayoutDashboard },
@@ -14,6 +15,7 @@ const NAV = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { healthy, loading } = useReplicationHealth();
 
   return (
     <aside
@@ -130,15 +132,35 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer */}
+      {/* Footer — replication status */}
       <div className="px-4 py-4" style={{ borderTop: "1px solid #1c1c30" }}>
         <div className="flex items-center gap-2">
-          <div className="status-dot" />
-          <span className="text-xs" style={{ fontFamily: "var(--font-geist-mono)", color: "#40405a" }}>
-            MySQL
+          {loading ? (
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#40405a" }} />
+          ) : healthy ? (
+            <div className="w-2 h-2 rounded-full" style={{ background: "#aaff00", boxShadow: "0 0 6px rgba(170,255,0,0.8)" }} />
+          ) : (
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#ff4444", boxShadow: "0 0 6px rgba(255,68,68,0.8)" }} />
+          )}
+          <span
+            className="text-xs"
+            style={{
+              fontFamily: "var(--font-geist-mono)",
+              color: loading ? "#40405a" : healthy ? "#aaff00" : "#ff4444",
+            }}
+          >
+            {loading ? "Verificando..." : healthy ? "Réplica activa" : "Réplica caída"}
           </span>
-          <Wifi className="w-3 h-3 ml-auto" style={{ color: "#1c1c30" }} />
+          {!loading && (healthy
+            ? <Wifi className="w-3 h-3 ml-auto" style={{ color: "#aaff00", opacity: 0.6 }} />
+            : <WifiOff className="w-3 h-3 ml-auto" style={{ color: "#ff4444", opacity: 0.8 }} />
+          )}
         </div>
+        {!loading && !healthy && (
+          <p className="text-xs mt-1" style={{ color: "#ff4444", opacity: 0.7, fontFamily: "var(--font-geist-mono)", lineHeight: 1.3 }}>
+            Escrituras bloqueadas
+          </p>
+        )}
       </div>
     </aside>
   );
