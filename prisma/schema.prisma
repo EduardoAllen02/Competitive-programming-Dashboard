@@ -47,6 +47,7 @@ model MiembroEquipo {
   persona    Persona @relation(fields: [persona_id], references: [id])
 
   @@unique([equipo_id, persona_id])
+  @@map("miembro_equipo")
 }
 
 enum TipoFecha {
@@ -61,6 +62,8 @@ model FechaCompetencia {
   numero    Int?
   fecha     DateTime        @db.Date
   problemas FechaProblema[]
+
+  @@map("fecha_competencia")
 }
 
 model Problema {
@@ -79,6 +82,7 @@ model FechaProblema {
   resultados  Resultado[]
 
   @@id([fecha_id, problema_id])
+  @@map("fecha_problema")
 }
 
 model Resultado {
