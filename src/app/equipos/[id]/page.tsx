@@ -40,6 +40,7 @@ export default function EquipoDetail() {
 
   const addMiembro = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!personaId) { toast.error("Selecciona una persona"); return; }
     setSaving(true);
     const res = await fetch(`/api/equipos/${id}/miembros`, {
       method: "POST",
@@ -52,7 +53,8 @@ export default function EquipoDetail() {
       setPersonaId("");
       load();
     } else {
-      toast.error("Error — revisa que la persona no esté ya en el equipo");
+      const err = await res.json().catch(() => ({}));
+      toast.error(err.error || "Esta persona ya está en el equipo");
     }
     setSaving(false);
   };
