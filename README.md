@@ -1,4 +1,4 @@
-# CompOS — Distributed Competitive Programming Management System
+# Distributed Competitive Programming Management System
 
 A full-stack web application for managing university programming competitions, built on a three-node MySQL replication cluster connected over a private VPN mesh.
 
