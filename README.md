@@ -2,7 +2,8 @@
 
 A full-stack web application for managing university programming competitions, built on a three-node MySQL replication cluster connected over a private VPN mesh.
 
-![CompOS Dashboard Preview](preview.png)
+![CompOS Dashboard](preview.png)
+![CompOS Ranking](preview-ranking.png)
 
 ---
 
