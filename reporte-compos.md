@@ -2,6 +2,7 @@
 
 **Asignatura:** Bases de Datos Distribuidas  
 **Fecha:** 2026-05-18  
+**Equipo:** Eduardo Emmanuel Figueroa Gutiérrez · Mario Ávila Guzmán  
 **Repositorio:** [EduardoAllen02/Competitive-programming-Dashboard](https://github.com/EduardoAllen02/Competitive-programming-Dashboard)
 
 ---
